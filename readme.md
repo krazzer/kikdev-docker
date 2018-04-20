@@ -1,0 +1,1 @@
+This Dockerfile is used to set up a development environment for KikCMS, which isn't publicly available yet, stay tuned!

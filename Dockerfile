@@ -13,6 +13,11 @@ RUN apt-get update \
 	&& pecl install APCu-5.1.8 \
 	&& docker-php-ext-enable apcu
 
+# install GD
+RUN	apt-get update && apt-get install -y libfreetype6-dev libjpeg62-turbo-dev libpng12-dev \
+    && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
+    && docker-php-ext-install -j$(nproc) gd
+
 RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/ssl-cert-snakeoil.key -out /etc/ssl/certs/ssl-cert-snakeoil.pem -subj "/C=NL/ST=Holland/L=Alkmaar/O=Kiksaus/OU=Development/CN=kiksaus"
 
 RUN a2enmod rewrite

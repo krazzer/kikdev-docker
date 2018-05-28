@@ -2,6 +2,13 @@ FROM mileschou/phalcon:7.1-apache
 
 MAINTAINER Kaz van Wel <info@kiksaus.nl>
 
+RUN apt-get update && apt-get install locales
+RUN echo "en_US UTF-8" >> /etc/locale.gen
+RUN echo "en_GB UTF-8" >> /etc/locale.gen
+RUN echo "nl_NL UTF-8" >> /etc/locale.gen
+
+RUN locale-gen
+
 RUN docker-php-ext-install pdo_mysql
 
 RUN apt-get update \
@@ -10,6 +17,8 @@ RUN apt-get update \
 	&& docker-php-ext-enable imagick \
 	&& pecl install xdebug \
     && docker-php-ext-enable xdebug \
+	&& docker-php-ext-install mysqli \
+	&& docker-php-ext-enable mysqli \
 	&& pecl install APCu-5.1.8 \
 	&& docker-php-ext-enable apcu
 

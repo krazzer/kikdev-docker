@@ -2,7 +2,9 @@ FROM mileschou/phalcon:7.1-apache
 
 MAINTAINER Kaz van Wel <info@kiksaus.nl>
 
-RUN apt-get update && apt-get install locales
+RUN apt-get upgrade -y && apt-get update -y
+RUN apt-get install -y locales
+
 RUN echo "en_US UTF-8" >> /etc/locale.gen
 RUN echo "en_GB UTF-8" >> /etc/locale.gen
 RUN echo "nl_NL UTF-8" >> /etc/locale.gen
@@ -11,7 +13,7 @@ RUN locale-gen
 
 RUN docker-php-ext-install pdo_mysql
 
-RUN apt-get update \
+RUN apt-get update -y \
     && apt-get install -y libmagickwand-dev --no-install-recommends \
     && pecl install imagick \
 	&& docker-php-ext-enable imagick \
@@ -23,11 +25,14 @@ RUN apt-get update \
 	&& docker-php-ext-enable apcu
 
 # install GD
-RUN	apt-get update && apt-get install -y libfreetype6-dev libjpeg62-turbo-dev libpng12-dev \
-    && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
-    && docker-php-ext-install -j$(nproc) gd
+RUN	apt-get update -y
+RUN apt-get install -y libfreetype6-dev libjpeg62-turbo-dev libpng-dev
 
-RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/ssl-cert-snakeoil.key -out /etc/ssl/certs/ssl-cert-snakeoil.pem -subj "/C=NL/ST=Holland/L=Alkmaar/O=Kiksaus/OU=Development/CN=kiksaus"
+RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/
+RUN docker-php-ext-install -j$(nproc) gd
+
+RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/ssl-cert-snakeoil.key \
+    -out /etc/ssl/certs/ssl-cert-snakeoil.pem -subj "/C=NL/ST=Holland/L=Alkmaar/O=Kiksaus/OU=Development/CN=kiksaus"
 
 RUN a2enmod rewrite
 RUN a2enmod headers

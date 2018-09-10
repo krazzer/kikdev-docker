@@ -24,6 +24,12 @@ RUN apt-get upgrade -y && apt-get update -y \
 	&& pecl install APCu-5.1.8 \
 	&& docker-php-ext-enable apcu \
 
+    # install zip
+    && apt-get update \
+    && apt-get install -y zlib1g-dev \
+    && docker-php-ext-install zip \
+    && docker-php-ext-enable zip \
+
     # install GD
     && apt-get update -y \
     && apt-get install -y libfreetype6-dev libjpeg62-turbo-dev libpng-dev \
@@ -39,8 +45,6 @@ RUN apt-get upgrade -y && apt-get update -y \
 
     && a2ensite default-ssl \
 
-
-
     # install go
     && apt-get update \
     && apt-get install --no-install-recommends --assume-yes --quiet ca-certificates curl git \
@@ -49,8 +53,6 @@ RUN apt-get upgrade -y && apt-get update -y \
     && curl -Lsf 'https://storage.googleapis.com/golang/go1.8.3.linux-amd64.tar.gz' | tar -C '/usr/local' -xvzf - \
 
     # install mhsendmail, needed for mailhog
-
-
     && go get github.com/mailhog/mhsendmail \
     && cp /root/go/bin/mhsendmail /usr/bin/mhsendmail \
 

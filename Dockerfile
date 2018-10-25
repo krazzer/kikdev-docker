@@ -65,5 +65,14 @@ RUN apt-get upgrade -y && apt-get update -y \
     && echo "xdebug.remote_enable=on" >> /usr/local/etc/php/php.ini \
     && echo "xdebug.remote_autostart=off" >> /usr/local/etc/php/php.ini
 
+# install ping, vim & tzdata
+RUN apt-get update -y \
+    && apt-get install -y iputils-ping \
+    && apt-get install -y vim \
+    && apt-get install -y tzdata
+
+# set servername
+RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
+
 EXPOSE 80
 EXPOSE 443

@@ -17,8 +17,6 @@ RUN apt-get upgrade -y && apt-get update -y \
     && apt-get install -y libmagickwand-dev --no-install-recommends \
     && pecl install imagick \
 	&& docker-php-ext-enable imagick \
-	&& pecl install xdebug \
-    && docker-php-ext-enable xdebug \
 	&& docker-php-ext-install mysqli \
 	&& docker-php-ext-enable mysqli \
 	&& pecl install APCu-5.1.8 \
@@ -59,11 +57,7 @@ RUN apt-get upgrade -y && apt-get update -y \
     # errorlog config
     && echo "log_errors = on" >> /usr/local/etc/php/php.ini \
     && echo "error_reporting = E_ALL" >> /usr/local/etc/php/php.ini \
-    && echo "error_log = /var/log/apache2/php_error.log" >> /usr/local/etc/php/php.ini \
-
-    # xdebug config
-    && echo "xdebug.remote_enable=on" >> /usr/local/etc/php/php.ini \
-    && echo "xdebug.remote_autostart=off" >> /usr/local/etc/php/php.ini
+    && echo "error_log = /var/log/apache2/php_error.log" >> /usr/local/etc/php/php.ini
 
 # install ping, vim & tzdata
 RUN apt-get update -y \

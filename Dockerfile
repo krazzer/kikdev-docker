@@ -65,6 +65,9 @@ RUN apt-get update -y \
     && apt-get install -y vim \
     && apt-get install -y tzdata
 
+# install xdebug
+RUN pecl install xdebug
+
 # set servername
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 

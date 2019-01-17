@@ -57,7 +57,9 @@ RUN apt-get upgrade -y && apt-get update -y \
     # errorlog config
     && echo "log_errors = on" >> /usr/local/etc/php/php.ini \
     && echo "error_reporting = E_ALL" >> /usr/local/etc/php/php.ini \
-    && echo "error_log = /var/log/apache2/php_error.log" >> /usr/local/etc/php/php.ini
+    && echo "error_log = /var/log/apache2/php_error.log" >> /usr/local/etc/php/php.ini \
+    && echo "xdebug.remote_enable=on" >> /usr/local/etc/php/php.ini \
+    && echo "xdebug.remote_autostart=on" >> /usr/local/etc/php/php.ini
 
 # install ping, vim & tzdata
 RUN apt-get update -y \

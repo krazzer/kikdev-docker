@@ -1,4 +1,4 @@
-FROM mileschou/phalcon:7.1-apache
+FROM mileschou/phalcon:7.2-apache
 
 MAINTAINER Kaz van Wel <info@kiksaus.nl>
 

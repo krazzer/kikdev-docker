@@ -1,3 +1,0 @@
-FROM bitnami/redis:latest
-
-RUN echo net.core.somaxconn=65535 > /etc/sysctl.conf

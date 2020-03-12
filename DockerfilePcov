@@ -1,0 +1,8 @@
+FROM kiksaus/kikdev:latest
+
+# install pcov
+RUN pecl install pcov
+
+# enable pcov
+RUN echo "extension = pcov.so" >> /usr/local/etc/php/php.ini
+RUN echo "pcov.enabled = 1" >> /usr/local/etc/php/php.ini

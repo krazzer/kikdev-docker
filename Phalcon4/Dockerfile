@@ -79,7 +79,5 @@ RUN pecl install xdebug
 # set servername
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
-RUN echo "zend_extension=/usr/local/lib/php/extensions/no-debug-non-zts-20190902/xdebug.so" >> /usr/local/etc/php/php.ini
-
 EXPOSE 80
 EXPOSE 443

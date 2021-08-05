@@ -64,8 +64,9 @@ RUN cp /root/go/bin/mhsendmail /usr/bin/mhsendmail
 RUN echo "log_errors = on" >> /usr/local/etc/php/php.ini
 RUN echo "error_reporting = E_ALL" >> /usr/local/etc/php/php.ini
 RUN echo "error_log = /var/log/apache2/php_error.log" >> /usr/local/etc/php/php.ini
-RUN echo "xdebug.remote_enable=on" >> /usr/local/etc/php/php.ini
-RUN echo "xdebug.remote_autostart=on" >> /usr/local/etc/php/php.i
+RUN echo "xdebug.mode=develop,debug" >> /usr/local/etc/php/php.ini
+RUN echo "xdebug.client_host=host.docker.internal" >> /usr/local/etc/php/php.ini
+RUN echo "xdebug.start_with_request=yes" >> /usr/local/etc/php/php.ini
 
 # install ping, vim & tzdata
 RUN apt-get update -y \
@@ -74,7 +75,7 @@ RUN apt-get update -y \
     && apt-get install -y tzdata
 
 # install xdebug
-RUN pecl install xdebug
+RUN pecl install xdebug-3.0.2
 
 # set servername
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf

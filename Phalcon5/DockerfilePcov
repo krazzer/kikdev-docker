@@ -1,0 +1,8 @@
+FROM kiksaus/kikdev-phalcon5:latest
+
+# install pcov
+RUN pecl install pcov && docker-php-ext-enable pcov
+
+# enable pcov
+RUN echo "pcov.enabled = 1" >> /usr/local/etc/php/php.ini && \
+    echo "pcov.directory = /opt/project/src" >> /usr/local/etc/php/php.ini

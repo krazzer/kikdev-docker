@@ -111,6 +111,15 @@ RUN apt-get update -y \
 # install xdebug
 RUN pecl install xdebug-3.2.2
 
+# install intl
+RUN apt-get update && apt-get install -y \
+    libicu-dev \
+    libonig-dev \
+    && docker-php-ext-configure intl \
+    && docker-php-ext-install intl
+
+RUN docker-php-ext-enable intl
+
 # set servername
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 

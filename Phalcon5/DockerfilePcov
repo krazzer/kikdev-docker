@@ -1,4 +1,4 @@
-FROM phalcon5
+FROM kiksaus/kikdev-phalcon5
 
 # install pcov
 RUN pecl install pcov && docker-php-ext-enable pcov

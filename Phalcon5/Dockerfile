@@ -2,7 +2,7 @@ FROM php:8.2-apache
 
 MAINTAINER Kaz van Wel <info@kiksaus.nl>
 
-ARG PHALCON_VERSION=5.2.1
+ARG PHALCON_VERSION=5.6.0
 ARG PSR_VERSION=1.2.0
 
 # Install psr

@@ -101,6 +101,7 @@ RUN echo "error_log = /var/log/apache2/php_error.log" >> /usr/local/etc/php/php.
 RUN echo "xdebug.mode=develop,debug" >> /usr/local/etc/php/php.ini
 RUN echo "xdebug.client_host=host.docker.internal" >> /usr/local/etc/php/php.ini
 RUN echo "xdebug.start_with_request=yes" >> /usr/local/etc/php/php.ini
+RUN echo "xdebug.client_port=9000" >> /usr/local/etc/php/php.ini
 
 # install ping, vim & tzdata
 RUN apt-get update -y \

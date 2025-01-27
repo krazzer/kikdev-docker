@@ -102,6 +102,8 @@ RUN echo "xdebug.mode=develop,debug" >> /usr/local/etc/php/php.ini
 RUN echo "xdebug.client_host=host.docker.internal" >> /usr/local/etc/php/php.ini
 RUN echo "xdebug.start_with_request=yes" >> /usr/local/etc/php/php.ini
 RUN echo "xdebug.client_port=9000" >> /usr/local/etc/php/php.ini
+RUN echo "upload_max_filesize = 15M" >> /usr/local/etc/php/php.ini
+RUN echo "post_max_size = 30M" >> /usr/local/etc/php/php.ini
 
 # install ping, vim & tzdata
 RUN apt-get update -y \

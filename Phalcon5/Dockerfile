@@ -2,7 +2,7 @@ FROM php:8.2-apache
 
 MAINTAINER Kaz van Wel <info@kiksaus.nl>
 
-ARG PHALCON_VERSION=5.8.0
+ARG PHALCON_VERSION=5.9.3
 ARG PSR_VERSION=1.2.0
 
 # Install psr
@@ -122,6 +122,17 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install intl
 
 RUN docker-php-ext-enable intl
+
+# Enable and configure OPcache
+RUN docker-php-ext-install opcache \
+ && docker-php-ext-enable opcache \
+ && echo "opcache.enable=1" >> /usr/local/etc/php/php.ini \
+ && echo "opcache.enable_cli=1" >> /usr/local/etc/php/php.ini \
+ && echo "opcache.memory_consumption=128" >> /usr/local/etc/php/php.ini \
+ && echo "opcache.interned_strings_buffer=8" >> /usr/local/etc/php/php.ini \
+ && echo "opcache.max_accelerated_files=10000" >> /usr/local/etc/php/php.ini \
+ && echo "opcache.revalidate_freq=0" >> /usr/local/etc/php/php.ini \
+ && echo "opcache.validate_timestamps=1" >> /usr/local/etc/php/php.ini
 
 # set servername
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf

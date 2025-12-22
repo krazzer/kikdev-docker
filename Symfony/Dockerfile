@@ -1,6 +1,14 @@
-FROM php:8.3-apache
+FROM php:8.4-apache
 
-ARG PSR_VERSION=1.2.0
+# install opcache
+RUN docker-php-ext-install opcache && \
+    echo "opcache.enable=1" > /usr/local/etc/php/conf.d/opcache.ini && \
+    echo "opcache.enable_cli=1" >> /usr/local/etc/php/conf.d/opcache.ini && \
+    echo "opcache.memory_consumption=128" >> /usr/local/etc/php/conf.d/opcache.ini && \
+    echo "opcache.interned_strings_buffer=8" >> /usr/local/etc/php/conf.d/opcache.ini && \
+    echo "opcache.max_accelerated_files=10000" >> /usr/local/etc/php/conf.d/opcache.ini && \
+    echo "opcache.validate_timestamps=1" >> /usr/local/etc/php/conf.d/opcache.ini && \
+    echo "opcache.revalidate_freq=2" >> /usr/local/etc/php/conf.d/opcache.ini
 
 # install intl
 RUN apt-get update  \
@@ -12,29 +20,19 @@ RUN apt-get update  \
     && docker-php-ext-enable intl \
     && apt-get clean all
 
-# install imagick
-ADD --chmod=0755 \
-  https://github.com/mlocati/docker-php-extension-installer/releases/download/2.6.3/install-php-extensions \
-  /usr/local/bin/
-# Use latest released version, after https://github.com/Imagick/imagick/issues/640 is fixed
-RUN install-php-extensions imagick/imagick@28f27044e435a2b203e32675e942eb8de620ee58
-
-# install mbstring
+# Install dependencies for mbstring & imagick
 RUN apt-get update && apt-get install -y \
-    libicu-dev \
-    libonig-dev \
-    libpq-dev \
-    libzip-dev \
-    unzip && \
-    docker-php-ext-install mbstring && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
-
-# install psr
-RUN cd /tmp \
-    && curl -LO https://github.com/jbboehr/php-psr/archive/v${PSR_VERSION}.tar.gz \
-    && tar xzf /tmp/v${PSR_VERSION}.tar.gz \
-    && docker-php-ext-install -j $(getconf _NPROCESSORS_ONLN) /tmp/php-psr-${PSR_VERSION} \
-    && rm -r /tmp/v${PSR_VERSION}.tar.gz /tmp/php-psr-${PSR_VERSION}
+        libicu-dev \
+        libonig-dev \
+        libpq-dev \
+        libzip-dev \
+        unzip \
+        libmagickwand-dev --no-install-recommends \
+        && pecl install imagick \
+        && docker-php-ext-enable imagick \
+        && docker-php-ext-install mbstring \
+        && apt-get clean \
+        && rm -rf /var/lib/apt/lists/*
 
 ENV PATH=/usr/local/go/bin:$PATH
 
@@ -51,7 +49,7 @@ RUN docker-php-ext-install pdo_mysql
 # install mysqli & APCu
 RUN docker-php-ext-install mysqli
 RUN docker-php-ext-enable mysqli
-RUN pecl install APCu-5.1.22
+RUN pecl install apcu
 RUN docker-php-ext-enable apcu
 
 # install zip
@@ -88,16 +86,17 @@ RUN a2ensite default-ssl
 RUN apt-get clean all
 
 # install go
-RUN apt-get update
-RUN apt-get install --no-install-recommends --assume-yes --quiet ca-certificates curl git
-RUN rm -rf /var/lib/apt/lists/*
-
-RUN curl -Lsf 'https://storage.googleapis.com/golang/go1.8.3.linux-amd64.tar.gz' | tar -C '/usr/local' -xvzf -
-RUN apt-get clean all
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        curl \
+        ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+RUN curl -fsSL https://go.dev/dl/go1.21.3.linux-amd64.tar.gz -o /tmp/go.tar.gz \
+    && tar -C /usr/local -xzf /tmp/go.tar.gz \
+    && rm /tmp/go.tar.gz
 
 # install mhsendmail, needed for mailh
-RUN go get github.com/mailhog/mhsendmail
-RUN cp /root/go/bin/mhsendmail /usr/bin/mhsendmail
+RUN /usr/local/go/bin/go install github.com/mailhog/mhsendmail@latest \
+    && cp /root/go/bin/mhsendmail /usr/local/bin/mhsendmail
 
 # errorlog conf
 RUN echo "log_errors = on" >> /usr/local/etc/php/php.ini
@@ -130,6 +129,9 @@ WORKDIR /var/www/public_html
 ENV APACHE_DOCUMENT_ROOT=/var/www/public_html
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
+
+# enable xdebug
+RUN echo "zend_extension=/usr/local/lib/php/extensions/no-debug-non-zts-20240924/xdebug.so" >> /usr/local/etc/php/php.ini
 
 RUN apache2ctl restart
 

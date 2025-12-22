@@ -123,6 +123,13 @@ RUN apt-get update && apt-get install -y \
 
 RUN docker-php-ext-enable intl
 
+# Install dependencies for pgsql
+RUN apt-get update && apt-get install -y \
+        libpq-dev \
+    && docker-php-ext-install pdo_pgsql \
+    && rm -rf /var/lib/apt/lists/* \
+    && docker-php-ext-install pdo_pgsql
+
 # Enable and configure OPcache
 RUN docker-php-ext-install opcache \
  && docker-php-ext-enable opcache \

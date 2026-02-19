@@ -75,9 +75,6 @@ RUN apt-get update
 RUN apt-get install -y libxml2-dev
 RUN docker-php-ext-install soap
 
-RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/ssl-cert-snakeoil.key \
-        -out /etc/ssl/certs/ssl-cert-snakeoil.pem -subj "/C=NL/ST=Holland/L=Hollands Kroon/O=Kiksaus/OU=Development/CN=kiksaus"
-
 RUN a2enmod rewrite
 RUN a2enmod headers
 RUN a2enmod ssl
@@ -130,10 +127,11 @@ ENV APACHE_DOCUMENT_ROOT=/var/www/public_html
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
+COPY apache-ssl.conf /etc/apache2/sites-available/default-ssl.conf
+RUN a2ensite default-ssl.conf
+
 # enable xdebug
 RUN echo "zend_extension=/usr/local/lib/php/extensions/no-debug-non-zts-20240924/xdebug.so" >> /usr/local/etc/php/php.ini
-
-RUN apache2ctl restart
 
 EXPOSE 80
 EXPOSE 443

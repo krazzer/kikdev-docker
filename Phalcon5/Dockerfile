@@ -1,6 +1,6 @@
 FROM php:8.2-apache
 
-MAINTAINER Kaz van Wel <info@kiksaus.nl>
+LABEL maintainer="Kaz van Wel <info@kiksaus.nl>"
 
 ARG PHALCON_VERSION=5.9.3
 ARG PSR_VERSION=1.2.0

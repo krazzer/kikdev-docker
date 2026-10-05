@@ -2,7 +2,7 @@ FROM php:8.2-apache
 
 LABEL maintainer="Kaz van Wel <info@kiksaus.nl>"
 
-ARG PHALCON_VERSION=5.9.3
+ARG PHALCON_VERSION=5.22.0
 ARG PSR_VERSION=1.2.0
 
 # Install psr
@@ -88,10 +88,10 @@ RUN apt-get update
 RUN apt-get install --no-install-recommends --assume-yes --quiet ca-certificates curl git
 RUN rm -rf /var/lib/apt/lists/*
 
-RUN curl -Lsf 'https://storage.googleapis.com/golang/go1.8.3.linux-amd64.tar.gz' | tar -C '/usr/local' -xvzf -
+RUN curl -Lsf 'https://dl.google.com/go/go1.22.0.linux-amd64.tar.gz' | tar -C '/usr/local' -xvzf -
 
 #install mhsendmail, needed for mailh
-RUN go get github.com/mailhog/mhsendmail
+RUN go install github.com/mailhog/mhsendmail@latest
 RUN cp /root/go/bin/mhsendmail /usr/bin/mhsendmail
 
 #errorlog conf

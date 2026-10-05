@@ -8,13 +8,6 @@ ARG PSR_VERSION=1.2.0
 RUN pecl install psr-1.2.0 \
     && docker-php-ext-enable psr
 
-# Install phalcon
-COPY phalcon-5.22.0.so /tmp/phalcon.so
-
-RUN cp /tmp/phalcon.so $(php -r 'echo ini_get("extension_dir");') \
-    && docker-php-ext-enable phalcon \
-    && rm -rf /tmp/phalcon.so
-
 ENV PATH=/usr/local/go/bin:$PATH
 
 RUN apt-get upgrade -y && apt-get update -y
